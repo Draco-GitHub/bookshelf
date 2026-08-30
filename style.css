@@ -1,0 +1,155 @@
+:root {
+    --spine-img: url("book_spine.png");
+    --spine-hue: 0deg;
+    --spine-saturation: 100%;
+    
+    /* Book Size Variables */
+    --book-height: 560px;
+    --book-spine-width: 100px;
+    --book-cover-width: 380px;
+}
+
+body {
+    background: rgb(34, 34, 34);
+}
+
+.bookshelf {
+    width: 90%;
+    margin: 2em;
+    padding: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.bookshelf article {
+    position: relative;
+    width: var(--book-spine-width);
+    height: var(--book-height);
+    /* border: 1px solid red; */
+    transition: width 1s cubic-bezier(.25,.8,.25,1);
+}
+
+.bookshelf article input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.bookshelf article label {
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px;
+}
+
+.bookshelf article:has(input:checked) {
+    width: calc(var(--book-spine-width) + var(--book-cover-width)); 
+}
+
+.bookshelf hgroup h2 {
+    margin: 5px 0 0 0;
+}
+
+.bookshelf hgroup p {
+    margin-top: 0;
+    font-style: italic;
+}
+
+.bookshelf article:has(input:checked) .book {
+    transform: rotateY(-75deg);
+}
+
+.bookshelf .book {
+    width: var(--book-spine-width);
+    height: var(--book-height);
+    position: relative;
+    display: flex;
+    z-index: 5;
+    perspective: 12000px;
+    transform-style: preserve-3d;
+    transform: translateZ(0) rotateY(0deg);
+    transition: transform 1s cubic-bezier(.25,.8,.25,1);
+}
+
+.bookshelf .side {
+    position: absolute;
+    border: 2px solid black;
+    border-radius: 3px;
+    font-weight: bold;
+    color: black;
+    text-align: center;
+    transform-origin: center left;
+    perspective: 1200px;
+}
+
+.bookshelf .spine {
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    width: calc(var(--book-spine-width) - 2px);
+    height: calc(var(--book-height) - 3px);
+    
+    background-image: var(--spine-img);
+    background-size: 100% 100%;
+    background-position: center;
+    
+    filter: hue-rotate(var(--spine-hue)) saturate(var(--spine-saturation));
+    transform: rotateY(0deg) translateZ(0px);
+    perspective: 1200px;
+}
+
+.bookshelf .spine-title {
+    display: block;
+    font-size: 12px;
+    color: white;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.bookshelf .top {
+    width: var(--book-spine-width);
+    height: var(--book-cover-width);
+    top: -2px;
+    
+    background-image: linear-gradient(90deg, white 90%, gray 10%);
+    background-size: 5px 5px;
+    
+    transform: rotateX(90deg) translateZ(calc(var(--book-cover-width) / 2)) translateY(calc(-1 * var(--book-cover-width) / 2));
+}
+
+.bookshelf .cover {
+    position: relative;
+    width: var(--book-cover-width);
+    height: auto;
+    max-height: var(--book-height);
+    left: var(--book-spine-width);
+    transform: rotateY(90deg) translateZ(0);
+}
+
+.bookshelf article:not(:has(input:checked)) .book:hover {
+    z-index: 6;
+    transform: translateY(-15px) rotateY(0deg);
+}
+
+.hidden-close {
+    display: none;
+}
+
+.close-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    cursor: pointer;
+}
+
+.bookshelf article:has(input:checked) .close-overlay {
+    z-index: 10;
+}
