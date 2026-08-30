@@ -1,9 +1,7 @@
 :root {
-    --spine-img: url("book_spine.png");
     --spine-hue: 0deg;
     --spine-saturation: 100%;
     
-    /* Book Size Variables */
     --book-height: 560px;
     --book-spine-width: 100px;
     --book-cover-width: 380px;
@@ -11,23 +9,58 @@
 
 body {
     background: rgb(34, 34, 34);
+    margin: 0;
+    padding: 2em;
+    font-family: sans-serif;
+}
+
+.bookshelf-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .bookshelf {
-    width: 90%;
-    margin: 2em;
-    padding: 1em;
     display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    
+    scroll-snap-type: x proximity;
+    
+    gap: 2em;
+    padding: 1em 0 2em 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.bookshelf.js-active {
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+}
+.bookshelf.js-active::-webkit-scrollbar {
+    display: none; 
+}
+
+.bookshelf::before,
+.bookshelf::after {
+    content: '';
+    flex: 0 0 calc(50% - 40px);
 }
 
 .bookshelf article {
+    scroll-snap-align: center;
+    scroll-snap-stop: normal;
     position: relative;
+    display: flex;
+    flex-direction: column;
     width: var(--book-spine-width);
-    height: var(--book-height);
-    /* border: 1px solid red; */
-    transition: width 1s cubic-bezier(.25,.8,.25,1);
+    flex-shrink: 0;
+    transition: width 0.6s cubic-bezier(.25,.8,.25,1);
 }
 
 .bookshelf article input[type="radio"] {
@@ -37,29 +70,200 @@ body {
     height: 0;
 }
 
-.bookshelf article label {
+.bookshelf article label[for^="radio-"] {
     display: block;
     cursor: pointer;
     width: 100%;
-    height: 100%;
+    height: var(--book-height);
     perspective: 1000px;
 }
 
-.bookshelf article:has(input:checked) {
+.bookshelf article:has(input[type="radio"]:checked),
+.bookshelf article:focus-within {
     width: calc(var(--book-spine-width) + var(--book-cover-width)); 
 }
 
-.bookshelf hgroup h2 {
-    margin: 5px 0 0 0;
+.status-bar {
+    margin-top: 15px;
+    width: 100%;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
-.bookshelf hgroup p {
+.status-badge {
+    font-size: 9.5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+    min-width: 0;
+}
+
+.status-badge.reading { background: #2b5c8f; color: #8bbdff; }
+.status-badge.completed { background: #1e5c38; color: #85e0a3; }
+.status-badge.plan { background: #5c451e; color: #ffd185; }
+
+article:has(input[type="radio"]:checked) .status-bar,
+article:focus-within .status-bar {
+    padding: 8px 12px;
+    justify-content: space-between;
+}
+
+article:has(input[type="radio"]:checked) .status-badge,
+article:focus-within .status-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+.more-info-btn {
+    display: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.more-info-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+article:has(input[type="radio"]:checked) .more-info-btn,
+article:focus-within .more-info-btn {
+    display: inline-block;
+    animation: fadeIn 0.3s ease-in forwards;
+}
+
+.modal-toggle {
+    display: none;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-toggle:checked ~ .modal {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: #222;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 24px 30px;
+    border-radius: 8px;
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+}
+
+.modal-content h3 {
     margin-top: 0;
-    font-style: italic;
+    margin-bottom: 4px;
+    font-size: 20px;
 }
 
-.bookshelf article:has(input:checked) .book {
-    transform: rotateY(-75deg);
+.modal-author {
+    color: #aaa;
+    font-style: italic;
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 24px;
+    color: #888;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2em 0 0 0;
+    width: 100%;
+}
+
+.pagination-window {
+    width: 98px; 
+    overflow: hidden;
+    position: relative;
+    padding: 10px 4px; 
+    margin: -10px -4px;
+    box-sizing: content-box;
+}
+
+.pagination-track {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+    transition: transform 0.3s ease-out;
+    margin: 0;
+}
+
+.dot {
+    flex: 0 0 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    transform: scale(1);
+}
+
+.dot.small { transform: scale(0.6); }
+.dot.active { background: #fff; transform: scale(1.4); }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.bookshelf article:has(input[type="radio"]:checked) .book,
+.bookshelf article:focus-within .book { 
+    transform: rotateY(-75deg); 
 }
 
 .bookshelf .book {
@@ -90,17 +294,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    
     width: calc(var(--book-spine-width) - 2px);
     height: calc(var(--book-height) - 3px);
-    
-    background-image: var(--spine-img);
     background-size: 100% 100%;
     background-position: center;
-    
-    filter: hue-rotate(var(--spine-hue)) saturate(var(--spine-saturation));
     transform: rotateY(0deg) translateZ(0px);
-    perspective: 1200px;
 }
 
 .bookshelf .spine-title {
@@ -115,10 +313,8 @@ body {
     width: var(--book-spine-width);
     height: var(--book-cover-width);
     top: -2px;
-    
     background-image: linear-gradient(90deg, white 90%, gray 10%);
     background-size: 5px 5px;
-    
     transform: rotateX(90deg) translateZ(calc(var(--book-cover-width) / 2)) translateY(calc(-1 * var(--book-cover-width) / 2));
 }
 
@@ -131,25 +327,7 @@ body {
     transform: rotateY(90deg) translateZ(0);
 }
 
-.bookshelf article:not(:has(input:checked)) .book:hover {
+.bookshelf article:not(:has(input[type="radio"]:checked)):not(:focus-within) .book:hover {
     z-index: 6;
     transform: translateY(-15px) rotateY(0deg);
-}
-
-.hidden-close {
-    display: none;
-}
-
-.close-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    cursor: pointer;
-}
-
-.bookshelf article:has(input:checked) .close-overlay {
-    z-index: 10;
 }

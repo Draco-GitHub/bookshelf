@@ -1,52 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css" />
+    <title>3D Bookshelf Carousel</title>
 </head>
-
 <body>
-    <div class="bookshelf">
-        <article>
-            <label>
-                <input type="radio" name="bookshelf" checked>
-                <div class="book">
-                    <div class="side spine"><span class="spine-title">Book Title</span></div>
-                    <div class="side top"></div>
-                    <img src="book_cover.jpg" class="side cover">
-                </div>
-            </label>
-            
-            <label for="close-all" class="close-overlay"></label>
-        </article>
+    <div class="bookshelf-container" id="bookshelf-container">
+        
+        <div class="bookshelf" id="bookshelf">
+            <article>
+                <input type="radio" name="bookshelf" id="radio-1" checked>
+                <input type="checkbox" id="modal-1" class="modal-toggle">
 
-        <article>
-            <label>
-                <input type="radio" name="bookshelf">
-                <div class="book">
-                    <div class="side spine"><span class="spine-title">test</span></div>
-                    <div class="side top"></div>
-                    <img src="book_cover.jpg" class="side cover">
+                <label for="radio-1">
+                    <div class="book">
+                        <div class="side spine" style="background-image: url('book_spine_1.png');"><span class="spine-title">Book One</span></div>
+                        <div class="side top"></div>
+                        <img src="book_cover_1.jpg" class="side cover" alt="Cover 1">
+                    </div>
+                </label>
+
+                <div class="status-bar">
+                    <span class="status-badge reading">Reading</span>
+                    <label for="modal-1" class="more-info-btn">More Info</label>
                 </div>
-            </label>
-            
-            <label for="close-all" class="close-overlay"></label>
-        </article>
-        
-        <article>
-            <label>
-                <input type="radio" name="bookshelf">
-                <div class="book">
-                    <div class="side spine"><span class="spine-title">Book Title</span></div>
-                    <div class="side top"></div>
-                    <img src="book_cover.jpg" class="side cover">
+
+                <div class="modal">
+                    <div class="modal-content">
+                        <label for="modal-1" class="close-modal">&times;</label>
+                        <h3>Book One</h3>
+                        <p class="modal-author">By Author One</p>
+                        <p>Detailed summary, ratings, chapter progress, and notes about Book One can be displayed inside this popup overlay.</p>
+                    </div>
                 </div>
-            </label>
+            </article>
+
+            <article>
+                <input type="radio" name="bookshelf" id="radio-2">
+                <input type="checkbox" id="modal-2" class="modal-toggle">
+
+                <label for="radio-2">
+                    <div class="book">
+                        <div class="side spine" style="background-image: url('book_spine_2.png');"><span class="spine-title">Book Two</span></div>
+                        <div class="side top"></div>
+                        <img src="book_cover_2.jpg" class="side cover" alt="Cover 2">
+                    </div>
+                </label>
+
+                <div class="status-bar">
+                    <span class="status-badge completed">Completed</span>
+                    <label for="modal-2" class="more-info-btn">More Info</label>
+                </div>
+
+                <div class="modal">
+                    <div class="modal-content">
+                        <label for="modal-2" class="close-modal">&times;</label>
+                        <h3>Book Two</h3>
+                        <p class="modal-author">By Author Two</p>
+                        <p>Full review, completion date, and key takeaways for Book Two live here.</p>
+                    </div>
+                </div>
+            </article>
             
-            <label for="close-all" class="close-overlay"></label>
-        </article>
-        
+            <article>
+                <input type="radio" name="bookshelf" id="radio-3">
+                <input type="checkbox" id="modal-3" class="modal-toggle">
+
+                <label for="radio-3">
+                    <div class="book">
+                        <div class="side spine" style="background-image: url('book_spine_3.png');"><span class="spine-title">Book Three</span></div>
+                        <div class="side top"></div>
+                        <img src="book_cover_3.jpg" class="side cover" alt="Cover 3">
+                    </div>
+                </label>
+
+                <div class="status-bar">
+                    <span class="status-badge plan">Plan to Read</span>
+                    <label for="modal-3" class="more-info-btn">More Info</label>
+                </div>
+
+                <div class="modal">
+                    <div class="modal-content">
+                        <label for="modal-3" class="close-modal">&times;</label>
+                        <h3>Book Three</h3>
+                        <p class="modal-author">By Author Three</p>
+                        <p>Reading list priorities, release dates, and tags for Book Three.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <input type="radio" name="bookshelf" id="radio-4">
+                <input type="checkbox" id="modal-4" class="modal-toggle">
+
+                <label for="radio-4">
+                    <div class="book">
+                        <div class="side spine" style="background-image: url('book_spine_4.png');"><span class="spine-title">Book Four</span></div>
+                        <div class="side top"></div>
+                        <img src="book_cover_4.jpg" class="side cover" alt="Cover 4">
+                    </div>
+                </label>
+
+                <div class="status-bar">
+                    <span class="status-badge reading">Reading</span>
+                    <label for="modal-4" class="more-info-btn">More Info</label>
+                </div>
+
+                <div class="modal">
+                    <div class="modal-content">
+                        <label for="modal-4" class="close-modal">&times;</label>
+                        <h3>Book Four</h3>
+                        <p class="modal-author">By Author Four</p>
+                        <p>Detailed chapter progression notes and quotes for Book Four.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <input type="radio" name="bookshelf" id="radio-5">
+                <input type="checkbox" id="modal-5" class="modal-toggle">
+
+                <label for="radio-5">
+                    <div class="book">
+                        <div class="side spine" style="background-image: url('book_spine_5.png');"><span class="spine-title">Book Five</span></div>
+                        <div class="side top"></div>
+                        <img src="book_cover_5.jpg" class="side cover" alt="Cover 5">
+                    </div>
+                </label>
+
+                <div class="status-bar">
+                    <span class="status-badge plan">Plan to Read</span>
+                    <label for="modal-5" class="more-info-btn">More Info</label>
+                </div>
+
+                <div class="modal">
+                    <div class="modal-content">
+                        <label for="modal-5" class="close-modal">&times;</label>
+                        <h3>Book Five</h3>
+                        <p class="modal-author">By Author Five</p>
+                        <p>Book Five overview and library archive status.</p>
+                    </div>
+                </div>
+            </article>
+
+            <article>
+                <input type="radio" name="bookshelf" id="radio-6">
+                <input type="checkbox" id="modal-6" class="modal-toggle">
+
+                <label for="radio-6">
+                    <div class="book">
+                        <div class="side spine" style="background-image: url('book_spine_6.png');"><span class="spine-title">Book Six</span></div>
+                        <div class="side top"></div>
+                        <img src="book_cover_6.jpg" class="side cover" alt="Cover 6">
+                    </div>
+                </label>
+
+                <div class="status-bar">
+                    <span class="status-badge completed">Completed</span>
+                    <label for="modal-6" class="more-info-btn">More Info</label>
+                </div>
+
+                <div class="modal">
+                    <div class="modal-content">
+                        <label for="modal-6" class="close-modal">&times;</label>
+                        <h3>Book Six</h3>
+                        <p class="modal-author">By Author Six</p>
+                        <p>Final review metrics and reader ratings for Book Six.</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+
     </div>
+    
+    <script src="script.js"></script>
 </body>
-
 </html>
