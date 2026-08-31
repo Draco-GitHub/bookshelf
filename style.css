@@ -123,14 +123,18 @@ article:focus-within .status-bar {
     pointer-events: auto;
     padding: 8px 12px;
     justify-content: space-between;
+    min-width: max-content;
+    align-self: center; 
 }
 
-/* Badge resizes on hover OR when opened */
 article:hover .status-badge,
 article:has(input[type="radio"]:checked) .status-badge,
 article:focus-within .status-badge {
     font-size: 11px;
     padding: 4px 8px;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
 }
 
 .more-info-btn {
