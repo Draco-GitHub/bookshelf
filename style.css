@@ -280,8 +280,8 @@ article:focus-within .more-info-btn {
 
 .bookshelf .side {
     position: absolute;
-    border: 2px solid black;
-    border-radius: 3px;
+    /* border: 2px solid black; */
+    /* border-radius: 3px; */
     font-weight: bold;
     color: black;
     text-align: center;
@@ -303,17 +303,28 @@ article:focus-within .more-info-btn {
 
 .bookshelf .spine-title {
     display: block;
-    font-size: 12px;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace, ui-sans-serif, system-ui, sans-serif;
     color: white;
+    letter-spacing: 0.5px;
+
+    -webkit-text-stroke: 3px black;
+    paint-order: stroke fill; 
+    
     writing-mode: vertical-rl;
     text-orientation: mixed;
+    
+    max-height: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .bookshelf .top {
     width: var(--book-spine-width);
     height: var(--book-cover-width);
     top: -2px;
-    background-image: linear-gradient(90deg, white 90%, gray 10%);
     background-size: 5px 5px;
     transform: rotateX(90deg) translateZ(calc(var(--book-cover-width) / 2)) translateY(calc(-1 * var(--book-cover-width) / 2));
 }
@@ -323,6 +334,7 @@ article:focus-within .more-info-btn {
     width: var(--book-cover-width);
     height: auto;
     max-height: var(--book-height);
+    max-width: none;
     left: var(--book-spine-width);
     transform: rotateY(90deg) translateZ(0);
 }
