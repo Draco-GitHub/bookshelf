@@ -96,6 +96,8 @@ body {
     box-sizing: border-box;
     transition: all 0.3s ease;
     overflow: hidden;
+    opacity: 0;
+    pointer-events: none; 
 }
 
 .status-badge {
@@ -117,12 +119,18 @@ body {
 .status-badge.completed { background: #1e5c38; color: #85e0a3; }
 .status-badge.plan { background: #5c451e; color: #ffd185; }
 
+/* Status bar shows on hover OR when opened */
+article:hover .status-bar,
 article:has(input[type="radio"]:checked) .status-bar,
 article:focus-within .status-bar {
+    opacity: 1;
+    pointer-events: auto;
     padding: 8px 12px;
     justify-content: space-between;
 }
 
+/* Badge resizes on hover OR when opened */
+article:hover .status-badge,
 article:has(input[type="radio"]:checked) .status-badge,
 article:focus-within .status-badge {
     font-size: 11px;
@@ -146,6 +154,7 @@ article:focus-within .status-badge {
     background: rgba(255, 255, 255, 0.3);
 }
 
+/* Removed the hover state here - button ONLY shows when opened */
 article:has(input[type="radio"]:checked) .more-info-btn,
 article:focus-within .more-info-btn {
     display: inline-block;
@@ -280,8 +289,8 @@ article:focus-within .more-info-btn {
 
 .bookshelf .side {
     position: absolute;
-    /* border: 2px solid black; */
-    /* border-radius: 3px; */
+    /* Removed border: 2px solid black; */
+    border-radius: 3px;
     font-weight: bold;
     color: black;
     text-align: center;
@@ -303,18 +312,16 @@ article:focus-within .more-info-btn {
 
 .bookshelf .spine-title {
     display: block;
-    font-size: 24px;
+    font-size: 16px;
     font-weight: bold;
-    font-family: JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace, ui-sans-serif, system-ui, sans-serif;
+    font-family: ui-sans-serif, system-ui, sans-serif;
     color: white;
     letter-spacing: 0.5px;
-
-    -webkit-text-stroke: 3px black;
-    paint-order: stroke fill; 
-    
+    -webkit-text-stroke: 2px black; 
+    paint-order: stroke fill;
+    /* Removed text-shadow */
     writing-mode: vertical-rl;
     text-orientation: mixed;
-    
     max-height: 90%;
     white-space: nowrap;
     overflow: hidden;
