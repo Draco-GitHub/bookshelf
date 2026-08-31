@@ -65,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let scrollRAF;
-    let scrollEndTimeout;
 
     bookshelf.addEventListener('scroll', () => {
         window.cancelAnimationFrame(scrollRAF);
@@ -97,15 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             updateVisuals(closestIndex);
-
-            window.clearTimeout(scrollEndTimeout);
-            scrollEndTimeout = window.setTimeout(() => {
-                const radio = articles[closestIndex].querySelector('input[type="radio"]');
-                if (radio && !radio.checked) {
-                    radio.checked = true;
-                    articles[closestIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                }
-            }, 150);
         });
     });
 
