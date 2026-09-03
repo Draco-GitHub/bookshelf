@@ -3,8 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const bookshelf = document.getElementById('bookshelf');
     const articles = Array.from(bookshelf.querySelectorAll('article'));
 
+    // Enable JS-specific styling (like hiding scrollbars)
     bookshelf.classList.add('js-active');
 
+    // Setup Pagination DOM
     const paginationWrapper = document.createElement('div');
     paginationWrapper.className = 'pagination-wrapper';
     
@@ -27,23 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
         paginationWindow.style.width = 'auto';
     }
 
-    articles.forEach((article, index) => {
-        const dot = document.createElement('span');
-        dot.className = 'dot';
-        paginationTrack.appendChild(dot);
-        dots.push(dot);
+    // Shared variable to track the active slide animation
+    let centerAnimationId = null;
 
-        dot.addEventListener('click', () => {
-            const radio = article.querySelector('input[type="radio"]');
-            radio.checked = true; 
-            article.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        });
-        
-        article.querySelector('label[for^="radio-"]').addEventListener('click', () => {
-            article.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        });
-    });
-
+    // --- MOVED UP: Pagination Visuals Logic ---
+    // We moved this up so it can be called instantly when a dot or book is clicked
     function updateVisuals(activeIndex) {
         dots.forEach((dot, i) => {
             dot.classList.toggle('active', i === activeIndex);
@@ -57,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
             dot.classList.toggle('small', isSmall);
         });
 
+        // Slide the dots track if there are more than max visible
         if (dots.length > MAX_VISIBLE_DOTS) {
             let offset = Math.max(0, Math.min(activeIndex - 2, dots.length - MAX_VISIBLE_DOTS));
             const translateX = -(offset * (DOT_WIDTH + DOT_GAP));
@@ -64,9 +55,90 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    articles.forEach((article, index) => {
+        // Create pagination dot
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        paginationTrack.appendChild(dot);
+        dots.push(dot);
+
+        const radio = article.querySelector('input[type="radio"]');
+        const label = article.querySelector('label[for^="radio-"]');
+
+        function animateToCenter() {
+            // Cancel any active animation if a user clicks rapidly
+            if (centerAnimationId) {
+                window.cancelAnimationFrame(centerAnimationId);
+            }
+
+            // Temporarily disable CSS scroll locking so JS can animate smoothly
+            bookshelf.style.scrollBehavior = 'auto';
+            bookshelf.style.scrollSnapType = 'none';
+
+            const startTime = performance.now();
+            const duration = 800; // Matches your 0.8s CSS transition exactly
+            const startScrollLeft = bookshelf.scrollLeft;
+
+            // A smooth math easing function to make the slide look natural (Ease-Out)
+            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+            function trackCenter(currentTime) {
+                const elapsed = currentTime - startTime;
+                
+                // Calculate animation progress from 0 to 1
+                let progress = Math.min(elapsed / duration, 1);
+                const easedProgress = easeOutCubic(progress);
+
+                // Use BoundingRects to dynamically calculate the exact center 
+                // This accounts for the book expanding its width simultaneously via CSS
+                const bookshelfRect = bookshelf.getBoundingClientRect();
+                const articleRect = article.getBoundingClientRect();
+                
+                // The absolute coordinate of the book's center on the scroll canvas
+                const absoluteArticleCenter = bookshelf.scrollLeft + (articleRect.left - bookshelfRect.left) + (articleRect.width / 2);
+                
+                // The scroll position required to put that center in the middle of the screen
+                const currentTargetScroll = absoluteArticleCenter - (bookshelfRect.width / 2);
+
+                // Slide the scrollbar smoothly between the starting position and target
+                bookshelf.scrollLeft = startScrollLeft + (currentTargetScroll - startScrollLeft) * easedProgress;
+                
+                if (progress < 1) { 
+                    // Continue sliding
+                    centerAnimationId = window.requestAnimationFrame(trackCenter);
+                } else {
+                    // Animation complete: clean up and restore CSS snapping
+                    bookshelf.scrollLeft = currentTargetScroll;
+                    bookshelf.style.scrollBehavior = '';
+                    bookshelf.style.scrollSnapType = '';
+                    centerAnimationId = null;
+                }
+            }
+            
+            centerAnimationId = window.requestAnimationFrame(trackCenter);
+        }
+
+        // Event Listeners for clicking dots or books
+        dot.addEventListener('click', () => {
+            radio.checked = true; 
+            updateVisuals(index); // <-- FIX: Instantly update dot visual
+            animateToCenter();
+        });
+        
+        label.addEventListener('click', () => {
+            updateVisuals(index); // <-- FIX: Instantly update dot visual
+            // setTimeout ensures the click registers before we start calculating the center
+            setTimeout(animateToCenter, 0);
+        });
+    });
+
+    // Scroll tracking to update dots when user manually swipes/scrolls
     let scrollRAF;
 
     bookshelf.addEventListener('scroll', () => {
+        // Don't update dots manually while JS is forcing an animation
+        if (centerAnimationId) return; 
+
         window.cancelAnimationFrame(scrollRAF);
         
         scrollRAF = window.requestAnimationFrame(() => {
@@ -87,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
+            // Edge case overrides for very start and very end
             const maxScrollLeft = bookshelf.scrollWidth - bookshelf.clientWidth;
             if (Math.ceil(bookshelf.scrollLeft) >= maxScrollLeft - 2) {
                 closestIndex = articles.length - 1;
@@ -99,5 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Initialize first dot on page load
     updateVisuals(0);
 });
